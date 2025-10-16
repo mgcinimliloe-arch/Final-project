@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+
+{% block title %}History - Trucking System{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Transaction History</h1>
+
+<!-- Filter by Range -->
+<form class="row g-3 mb-4" method="GET" action="{{ url_for('history') }}">
+    <div class="col-auto">
+        <label for="line_from" class="form-label">From Line</label>
+        <input type="number" name="line_from" id="line_from" class="form-control">
+    </div>
+    <div class="col-auto">
+        <label for="line_to" class="form-label">To Line</label>
+        <input type="number" name="line_to" id="line_to" class="form-control">
+    </div>
+    <div class="col-auto align-self-end">
+        <button type="submit" class="btn btn-primary">Filter</button>
+        <a href="{{ url_for('history') }}" class="btn btn-secondary">Reset</a>
+    </div>
+</form>
+
+<!-- Transaction Table -->
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>#</th>
+        <th>Type</th>
+        <th>Truck ID</th>
+        <th>Amount</th>
+        <th>Expense Type</th>
+        <th>Note</th>
+        <th>Date</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% if history %}
+        {% for entry in history %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ entry.type }}</td>
+            <td>{{ entry.truck_id if entry.truck_id else '-' }}</td>
+            <td>${{ entry.amount }}</td>
+            <td>{{ entry.expense_type if entry.expense_type else '-' }}</td>
+            <td>{{ entry.note if entry.note else '-' }}</td>
+            <td>{{ entry.date.strftime("%Y-%m-%d %H:%M:%S") }}</td>
+        </tr>
+        {% endfor %}
+    {% else %}
+        <tr>
+            <td colspan="7" class="text-center">No transactions found.</td>
+        </tr>
+    {% endif %}
+    </tbody>
+</table>
+
+<a href="{{ url_for('index') }}" class="btn btn-secondary">Back to Main Page</a>
+{% endblock %}
